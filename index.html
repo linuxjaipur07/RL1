@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RANGLOOP | Designer Fashion</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!-- Styles -->
+<link rel="stylesheet" href="css/styles.css">
+
+<!-- Payment SDK -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<!-- Email SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+
+<!-- ══════════ HEADER ══════════ -->
+<div class="header">
+  <div class="logo" id="logoEl"><img src="assets/logo.png" alt="RANGLOOP" class="logo-img"></div>
+  <nav>
+    <a onclick="showPage('home')">Home</a>
+    <a onclick="showPage('shop')">Shop</a>
+    <a onclick="showPage('collections')">Collections</a>
+    <a onclick="showPage('new')">New</a>
+    <a onclick="showPage('editorial')">Editorial</a>
+  </nav>
+  <div class="h-icons">
+    <button class="icon-btn" onclick="openSearch()" title="Search">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+    </button>
+    <button class="icon-btn" onclick="openDrawer('wish')">♡ <span class="badge" id="wishCount">0</span></button>
+    <button class="icon-btn" onclick="openDrawer('cart')">Bag <span class="badge" id="cartCount">0</span></button>
+    <button class="icon-btn" onclick="openModal('login')"><span>Account</span></button>
+    <div class="hamburger" onclick="toggleMobileNav()"><span></span><span></span><span></span></div>
+  </div>
+</div>
+
+<!-- ══════════ MOBILE NAV ══════════ -->
+<div class="mobile-nav" id="mobileNav">
+  <button class="close-nav" onclick="toggleMobileNav()">×</button>
+  <a onclick="showPage('home');toggleMobileNav()">Home</a>
+  <a onclick="showPage('shop');toggleMobileNav()">Shop</a>
+  <a onclick="showPage('collections');toggleMobileNav()">Collections</a>
+  <a onclick="showPage('new');toggleMobileNav()">New</a>
+  <a onclick="showPage('editorial');toggleMobileNav()">Editorial</a>
+</div>
+
+<!-- ══════════ SEARCH OVERLAY ══════════ -->
+<div class="search-overlay" id="searchOverlay" onclick="if(event.target===this)closeSearch()">
+  <div class="search-box">
+    <div class="search-input-row">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input id="searchInput" type="text" placeholder="Search products, styles, categories…" autocomplete="off" oninput="runSearch(this.value)" onkeydown="if(event.key==='Escape')closeSearch()">
+      <button class="s-clear" id="sClear" onclick="clearSearch()">×</button>
+      <button class="s-close" onclick="closeSearch()">Close</button>
+    </div>
+    <div class="s-tags">
+      <span class="s-tag-lbl">Popular:</span>
+      <button class="s-tag" onclick="quickSearch('Office')">Office Wear</button>
+      <button class="s-tag" onclick="quickSearch('Ethical')">Ethical</button>
+      <button class="s-tag" onclick="quickSearch('Decent')">Decent Wear</button>
+      <button class="s-tag" onclick="quickSearch('Blazer')">Blazer</button>
+      <button class="s-tag" onclick="quickSearch('Women')">Women</button>
+      <button class="s-tag" onclick="quickSearch('Men')">Men</button>
+    </div>
+    <div class="s-results" id="sResults">
+      <div class="s-empty">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.2" opacity=".3"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+        <p>Start typing to search</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ HOME PAGE ══════════ -->
+<div id="homePage" class="page active">
+
+  <!-- HERO SLIDER -->
+  <div class="hero-slider" id="heroSlider">
+    <div class="hero-slide active">
+      <div class="hs-bg" style="background-image:url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1600')"></div>
+      <div class="hs-overlay"></div>
+      <div class="hs-content">
+        <div class="hs-eyebrow">Ethical Fashion 2026</div>
+        <h1>Dress with<br><em>Purpose</em></h1>
+        <p>Consciously crafted office wear for the modern professional.</p>
+        <button class="hs-btn" onclick="showPage('shop')">Shop Now <svg width="16" height="12" viewBox="0 0 18 12" fill="none"><path d="M12 1L17 6M17 6L12 11M17 6H1" stroke="currentColor" stroke-width="1.5"/></svg></button>
+      </div>
+      <div class="hs-tag">Ethical Collection</div>
+    </div>
+    <div class="hero-slide">
+      <div class="hs-bg" style="background-image:url('https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=1600')"></div>
+      <div class="hs-overlay"></div>
+      <div class="hs-content">
+        <div class="hs-eyebrow">Women's Office Edit</div>
+        <h1>Power<br><em>Dressing</em></h1>
+        <p>Elegant, professional looks that mean business.</p>
+        <button class="hs-btn" onclick="showPage('shop');filterProducts('Women',null)">Shop Women <svg width="16" height="12" viewBox="0 0 18 12" fill="none"><path d="M12 1L17 6M17 6L12 11M17 6H1" stroke="currentColor" stroke-width="1.5"/></svg></button>
+      </div>
+      <div class="hs-tag">Office Wear</div>
+    </div>
+    <div class="hero-slide">
+      <div class="hs-bg" style="background-image:url('https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1600')"></div>
+      <div class="hs-overlay"></div>
+      <div class="hs-content">
+        <div class="hs-eyebrow">Men's Professional</div>
+        <h1>Refined<br><em>Excellence</em></h1>
+        <p>Sharp, sustainable tailoring for the boardroom and beyond.</p>
+        <button class="hs-btn" onclick="showPage('shop');filterProducts('Men',null)">Shop Men <svg width="16" height="12" viewBox="0 0 18 12" fill="none"><path d="M12 1L17 6M17 6L12 11M17 6H1" stroke="currentColor" stroke-width="1.5"/></svg></button>
+      </div>
+      <div class="hs-tag">Tailored Essentials</div>
+    </div>
+    <div class="hero-slide">
+      <div class="hs-bg" style="background-image:url('https://images.unsplash.com/photo-1551232864-3f0890e1777d?w=1600')"></div>
+      <div class="hs-overlay"></div>
+      <div class="hs-content">
+        <div class="hs-eyebrow">Sustainable Wardrobe</div>
+        <h1>Wear it<br><em>Responsibly</em></h1>
+        <p>Decent, timeless pieces made with ethical practices and fair labour.</p>
+        <button class="hs-btn" onclick="showPage('collections')">View Collections <svg width="16" height="12" viewBox="0 0 18 12" fill="none"><path d="M12 1L17 6M17 6L12 11M17 6H1" stroke="currentColor" stroke-width="1.5"/></svg></button>
+      </div>
+      <div class="hs-tag">Sustainable 2026</div>
+    </div>
+    <button class="hs-arrow hs-prev" onclick="heroSlide(-1)"><svg width="16" height="14" viewBox="0 0 20 16" fill="none"><path d="M8 1L1 8M1 8L8 15M1 8H19" stroke="currentColor" stroke-width="1.5"/></svg></button>
+    <button class="hs-arrow hs-next" onclick="heroSlide(1)"><svg width="16" height="14" viewBox="0 0 20 16" fill="none"><path d="M12 1L19 8M19 8L12 15M19 8H1" stroke="currentColor" stroke-width="1.5"/></svg></button>
+    <div class="hs-dots" id="hsDots">
+      <button class="hs-dot active" onclick="goSlide(0)"></button>
+      <button class="hs-dot" onclick="goSlide(1)"></button>
+      <button class="hs-dot" onclick="goSlide(2)"></button>
+      <button class="hs-dot" onclick="goSlide(3)"></button>
+    </div>
+    <div class="hs-counter"><strong id="hsNum">01</strong> / 04</div>
+    <div class="hs-progress"><div class="hs-bar" id="hsBar"></div></div>
+  </div>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span>Curated Excellence</span><span class="dot">◆</span>
+      <span>Timeless Design</span><span class="dot">◆</span>
+      <span>Sustainable Luxury</span><span class="dot">◆</span>
+      <span>Curated Excellence</span><span class="dot">◆</span>
+      <span>Timeless Design</span><span class="dot">◆</span>
+      <span>Sustainable Luxury</span><span class="dot">◆</span>
+    </div>
+  </div>
+
+  <!-- NEW ARRIVALS -->
+  <div class="products">
+    <div class="sec-head"><h2>New Arrivals</h2><a onclick="showPage('shop')">View All</a></div>
+    <div class="grid" id="homeGrid"></div>
+  </div>
+
+  <!-- MID BANNER -->
+  <div class="mid-banner">
+    <div class="banner-item">
+      <img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=800" alt="Women Office Wear">
+      <div class="banner-content"><h3>Women's Office Edit</h3><button class="btn-outline" onclick="showPage('shop');filterProducts('Women',null)">Discover</button></div>
+    </div>
+    <div class="banner-item">
+      <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800" alt="Men Professional">
+      <div class="banner-content"><h3>Men's Professional</h3><button class="btn-outline" onclick="showPage('shop');filterProducts('Men',null)">Explore</button></div>
+    </div>
+  </div>
+
+  <!-- PREMIUM GALLERY + SOCIAL -->
+  <div class="gallery-section">
+    <div class="gallery-header">
+      <div class="gallery-header-left">
+        <div class="eyebrow">As seen on</div>
+        <h2>@rangloop</h2>
+      </div>
+      <div class="social-bar">
+        <a class="s-pill sp-ig" href="https://instagram.com/rangloop" target="_blank" rel="noopener">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          <span>Instagram</span>
+        </a>
+        <a class="s-pill sp-wa" href="https://wa.me/1234567890" target="_blank" rel="noopener">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.114.552 4.1 1.512 5.829L.057 23.012a.75.75 0 00.931.931l5.183-1.455A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.073-1.38l-.361-.214-3.742 1.05 1.05-3.742-.214-.361A9.95 9.95 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+          <span>WhatsApp</span>
+        </a>
+        <a class="s-pill sp-tw" href="https://twitter.com/rangloop" target="_blank" rel="noopener">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          <span>Twitter / X</span>
+        </a>
+        <a class="s-pill sp-fb" href="https://facebook.com/rangloop" target="_blank" rel="noopener">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          <span>Facebook</span>
+        </a>
+      </div>
+    </div>
+    <!-- Premium Collage -->
+    <div class="gallery-collage">
+      <div class="g-item g-tall" onclick="openLightbox(0)">
+        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=700" alt="Office Look" loading="lazy">
+        <div class="g-overlay"><div class="g-overlay-inner"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff" stroke="none"/></svg>View on Instagram</div></div>
+      </div>
+      <div class="g-item" onclick="openLightbox(1)">
+        <img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=700" alt="Professional Women" loading="lazy">
+        <div class="g-overlay"><div class="g-overlay-inner"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff" stroke="none"/></svg>View on Instagram</div></div>
+      </div>
+      <div class="g-item" onclick="openLightbox(2)">
+        <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=700" alt="Office Men" loading="lazy">
+        <div class="g-overlay"><div class="g-overlay-inner"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff" stroke="none"/></svg>View on Instagram</div></div>
+      </div>
+      <div class="g-item g-wide" onclick="openLightbox(3)">
+        <img src="https://images.unsplash.com/photo-1551232864-3f0890e1777d?w=1000" alt="Ethical Workwear" loading="lazy">
+        <div class="g-overlay"><div class="g-overlay-inner"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff" stroke="none"/></svg>View on Instagram</div></div>
+      </div>
+      <div class="g-item" onclick="openLightbox(4)">
+        <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=700" alt="Decent Wear" loading="lazy">
+        <div class="g-overlay"><div class="g-overlay-inner"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff" stroke="none"/></svg>View on Instagram</div></div>
+      </div>
+      <div class="g-item g-cta">
+        <div class="g-cta-inner">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          <p>Follow for daily inspiration</p>
+          <a href="https://instagram.com/rangloop" target="_blank" rel="noopener" class="btn-dark" style="font-size:11px;letter-spacing:2px;">@rangloop</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ GALLERY LIGHTBOX ══════════ -->
+<div class="lightbox" id="lightbox" onclick="closeLb(event)">
+  <button class="lb-close" onclick="closeLightbox()">×</button>
+  <button class="lb-arrow lb-prev" onclick="lbNav(-1,event)"><svg width="16" height="14" viewBox="0 0 20 16" fill="none"><path d="M8 1L1 8M1 8L8 15M1 8H19" stroke="currentColor" stroke-width="1.5"/></svg></button>
+  <img id="lbImg" src="" alt="">
+  <button class="lb-arrow lb-next" onclick="lbNav(1,event)"><svg width="16" height="14" viewBox="0 0 20 16" fill="none"><path d="M12 1L19 8M19 8L12 15M19 8H1" stroke="currentColor" stroke-width="1.5"/></svg></button>
+  <a href="https://instagram.com/rangloop" target="_blank" rel="noopener" class="lb-ig" onclick="event.stopPropagation()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+    Open in Instagram
+  </a>
+</div>
+
+<!-- ══════════ SHOP PAGE ══════════ -->
+<div id="shopPage" class="page">
+  <div class="shop-hdr"><h1>Shop All</h1><p>Contemporary fashion from independent designers</p></div>
+  <div class="filters">
+    <button class="f-btn active" onclick="filterProducts('All',this)">All</button>
+    <button class="f-btn" onclick="filterProducts('Women',this)">Women</button>
+    <button class="f-btn" onclick="filterProducts('Men',this)">Men</button>
+    <button class="f-btn" onclick="filterProducts('Accessories',this)">Accessories</button>
+    <button class="f-btn" onclick="filterProducts('New',this)">New Arrivals</button>
+  </div>
+  <div class="products"><div class="grid" id="shopGrid"></div></div>
+</div>
+
+<!-- ══════════ COLLECTIONS ══════════ -->
+<div id="collectionsPage" class="page">
+  <div class="shop-hdr"><h1>Collections</h1><p>Curated selections that tell a story</p></div>
+  <div class="coll-grid">
+    <div class="coll-card" onclick="filterAndGo('Office')"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800" alt="Office Essentials"><div class="coll-overlay"><h3>Office Essentials</h3><p>Professional looks for every workday</p><button class="btn-outline">Shop Collection</button></div></div>
+    <div class="coll-card" onclick="filterAndGo('Ethical')"><img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800" alt="Ethical Wear"><div class="coll-overlay"><h3>Ethical Wear</h3><p>Sustainably made, consciously worn</p><button class="btn-outline">Shop Collection</button></div></div>
+    <div class="coll-card" onclick="filterAndGo('Minimalist')"><img src="https://images.unsplash.com/photo-1551232864-3f0890e1777d?w=800" alt="Decent Classics"><div class="coll-overlay"><h3>Decent Classics</h3><p>Timeless, modest pieces built to last</p><button class="btn-outline">Shop Collection</button></div></div>
+    <div class="coll-card" onclick="filterAndGo('Statement')"><img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800" alt="Smart Formal"><div class="coll-overlay"><h3>Smart Formal</h3><p>Elevated formalwear with ethical roots</p><button class="btn-outline">Shop Collection</button></div></div>
+    <div class="coll-card coll-card-wide" onclick="filterAndGo('Women')"><img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=1200" alt="Women's Professional"><div class="coll-overlay"><h3>Women's Professional</h3><p>Power dressing with purpose — for every occasion</p><button class="btn-outline">Shop Collection</button></div></div>
+    <div class="coll-card" onclick="filterAndGo('Men')"><img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800" alt="Men's Tailored"><div class="coll-overlay"><h3>Men's Tailored</h3><p>Refined suiting and workwear done right</p><button class="btn-outline">Shop Collection</button></div></div>
+    <div class="coll-card" onclick="filterAndGo('Accessories')"><img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800" alt="Work Accessories"><div class="coll-overlay"><h3>Work Accessories</h3><p>The finishing touch for your professional look</p><button class="btn-outline">Shop Collection</button></div></div>
+    <div class="coll-card" onclick="filterAndGo('New')"><img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800" alt="New Season"><div class="coll-overlay"><h3>New Season</h3><p>Fresh ethical arrivals for the modern wardrobe</p><button class="btn-outline">Shop Collection</button></div></div>
+    <div class="coll-card coll-card-wide" onclick="filterAndGo('Minimalist')"><img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200" alt="Monochrome Office"><div class="coll-overlay"><h3>Monochrome Office</h3><p>Clean, neutral tones for the confident professional</p><button class="btn-outline">Shop Collection</button></div></div>
+  </div>
+</div>
+
+<!-- ══════════ NEW ARRIVALS PAGE ══════════ -->
+<div id="newPage" class="page">
+  <div class="shop-hdr"><h1>New Arrivals</h1><p>The freshest pieces, just landed</p></div>
+  <div class="filters">
+    <button class="f-btn active" onclick="filterProducts('All',this)">All New</button>
+    <button class="f-btn" onclick="filterProducts('Women',this)">Women</button>
+    <button class="f-btn" onclick="filterProducts('Men',this)">Men</button>
+    <button class="f-btn" onclick="filterProducts('Accessories',this)">Accessories</button>
+  </div>
+  <div class="products"><div class="grid" id="newGrid"></div></div>
+</div>
+
+<!-- ══════════ EDITORIAL ══════════ -->
+<div id="editorialPage" class="page">
+  <div class="shop-hdr"><h1>Editorial</h1><p>Stories, lookbooks and the people behind the pieces</p></div>
+  <div class="ed-grid">
+    <div class="ed-hero" onclick="showToast('Opening story...')">
+      <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1200" alt="">
+      <div class="ed-hero-content"><span class="ed-tag">Feature</span><h2>The Art of Slow Fashion</h2><p>Why taking time to dress well is an act of self-respect</p><button class="btn-outline">Read Story</button></div>
+    </div>
+    <div class="ed-list">
+      <div class="ed-card" onclick="showToast('Opening story...')"><div class="ed-card-imgwrap"><img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600" alt=""></div><div class="ed-card-info"><span class="ed-tag-sm">Lookbook</span><h3>SS'26 Campaign</h3><p>Sun-drenched mornings and linen everything</p></div></div>
+      <div class="ed-card" onclick="showToast('Opening story...')"><div class="ed-card-imgwrap"><img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600" alt=""></div><div class="ed-card-info"><span class="ed-tag-sm">Interview</span><h3>Meet the Designer: Mara Osei</h3><p>On building a brand with intention</p></div></div>
+      <div class="ed-card" onclick="showToast('Opening story...')"><div class="ed-card-imgwrap"><img src="https://images.unsplash.com/photo-1558769132-cb1aea3c8565?w=600" alt=""></div><div class="ed-card-info"><span class="ed-tag-sm">Style Guide</span><h3>How to Build a Capsule Wardrobe</h3><p>30 pieces, infinite possibilities</p></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ABOUT ══════════ -->
+<div id="aboutPage" class="page">
+  <div class="ip-hero" style="background-image:url('https://images.unsplash.com/photo-1560243563-062bfc001d68?w=1400')"><div class="ip-overlay"><h1>Our Story</h1><p>Born from a love of craft and a belief that fashion should feel personal</p></div></div>
+  <div class="ip-body">
+    <div class="ip-cols">
+      <div class="ip-text">
+        <h2>We started with a question</h2>
+        <p>Why does getting dressed have to feel like a compromise? RANGLOOP was built to solve that. We work directly with independent designers across Europe and Asia to bring you pieces made with care, sold with honesty, and built to last.</p>
+        <p>Every garment has been held, worn, and debated by our small team before it ever reaches you. We turn away far more than we carry — and that's exactly the point.</p>
+      </div>
+      <div class="ip-vals">
+        <div class="val-item"><div class="val-num">01</div><div><h4>Curated Ruthlessly</h4><p>Less than 5% of items we review make it to the site.</p></div></div>
+        <div class="val-item"><div class="val-num">02</div><div><h4>Designed to Last</h4><p>We only stock pieces built for more than one season.</p></div></div>
+        <div class="val-item"><div class="val-num">03</div><div><h4>Ethically Made</h4><p>Every brand we carry is audited for fair labour practices.</p></div></div>
+        <div class="val-item"><div class="val-num">04</div><div><h4>Carbon Conscious</h4><p>All shipments are offset through verified climate projects.</p></div></div>
+      </div>
+    </div>
+    <div class="team-sec">
+      <h2>The Team</h2>
+      <div class="team-grid">
+        <div class="team-card"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400" alt=""><h4>Priya Rangwala</h4><span>Founder & Creative Director</span></div>
+        <div class="team-card"><img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400" alt=""><h4>James Okonkwo</h4><span>Head of Buying</span></div>
+        <div class="team-card"><img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400" alt=""><h4>Sofia Chen</h4><span>Lead Stylist</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SUSTAINABILITY ══════════ -->
+<div id="sustainPage" class="page">
+  <div class="ip-hero" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400')"><div class="ip-overlay"><h1>Sustainability</h1><p>Fashion that respects the planet and the people who make it</p></div></div>
+  <div class="ip-body">
+    <div class="stat-grid">
+      <div class="stat-card"><strong>100%</strong><span>Carbon-offset shipments</span></div>
+      <div class="stat-card"><strong>47</strong><span>Verified ethical brands</span></div>
+      <div class="stat-card"><strong>0</strong><span>Single-use plastics in packaging</span></div>
+      <div class="stat-card"><strong>2026</strong><span>Target for full supply chain transparency</span></div>
+    </div>
+    <div class="ip-cols">
+      <div class="ip-text">
+        <h2>Our Commitments</h2>
+        <p>Sustainability isn't a marketing claim — it's a practice. Every brand we partner with must meet our ethical sourcing criteria before going live on RANGLOOP.</p>
+        <p>We use FSC-certified, recycled packaging, ship carbon-neutral through verified offset programmes, and publish an annual impact report so you can hold us accountable.</p>
+        <button class="btn-dark" onclick="showToast('Downloading report...')" style="margin-top:16px;">Download 2025 Impact Report</button>
+      </div>
+      <div class="ip-vals">
+        <div class="val-item"><div class="val-num">♻</div><div><h4>Recycled Packaging</h4><p>All boxes and tape are 100% recycled or compostable.</p></div></div>
+        <div class="val-item"><div class="val-num">🌿</div><div><h4>Natural Fibres First</h4><p>We prioritise organic cotton, linen, wool and Tencel.</p></div></div>
+        <div class="val-item"><div class="val-num">🤝</div><div><h4>Fair Wages</h4><p>Every brand we carry pays at least a living wage.</p></div></div>
+        <div class="val-item"><div class="val-num">🌍</div><div><h4>Carbon Neutral</h4><p>Fully offset delivery and returns since 2024.</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ CONTACT ══════════ -->
+<div id="contactPage" class="page">
+  <div class="shop-hdr"><h1>Get in Touch</h1><p>We read every message and reply within 24 hours</p></div>
+  <div class="contact-layout">
+    <div class="contact-form-col">
+      <h3>Send us a message</h3>
+      <div class="form-row" style="margin-bottom:0"><input type="text" class="c-input" placeholder="First Name"><input type="text" class="c-input" placeholder="Last Name"></div>
+      <input type="email" class="c-input" placeholder="Email Address">
+      <select class="c-input"><option>Select a topic</option><option>Order enquiry</option><option>Returns & exchanges</option><option>Product question</option><option>Press & partnerships</option></select>
+      <textarea class="c-input c-textarea" placeholder="Your message..."></textarea>
+      <button class="btn-dark" onclick="showToast('Message sent! We\'ll reply within 24 hours.')">Send Message</button>
+    </div>
+    <div class="contact-info-col">
+      <div class="ci-block"><h4>Email</h4><p>hello@rangloop.com</p></div>
+      <div class="ci-block"><h4>Customer Service</h4><p>Monday – Friday<br>9:00 AM – 6:00 PM GMT</p></div>
+      <div class="ci-block"><h4>Press & Partnerships</h4><p>press@rangloop.com</p></div>
+      <div class="ci-block"><h4>Follow Us</h4>
+        <div class="soc-links">
+          <a href="https://instagram.com/rangloop" target="_blank">Instagram</a>
+          <a href="https://wa.me/1234567890" target="_blank">WhatsApp</a>
+          <a href="https://twitter.com/rangloop" target="_blank">Twitter / X</a>
+          <a href="https://facebook.com/rangloop" target="_blank">Facebook</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SIZE GUIDE ══════════ -->
+<div id="sizePage" class="page">
+  <div class="shop-hdr"><h1>Size Guide</h1><p>All measurements are in centimetres</p></div>
+  <div class="sg-body">
+    <div class="sg-tabs">
+      <button class="sg-tab active" onclick="switchSzTab('women',this)">Women</button>
+      <button class="sg-tab" onclick="switchSzTab('men',this)">Men</button>
+    </div>
+    <div class="sg-tbl-wrap active" id="womenSz">
+      <h3>Women's Clothing</h3>
+      <table class="sg-table"><thead><tr><th>Size</th><th>UK</th><th>EU</th><th>US</th><th>Chest</th><th>Waist</th><th>Hips</th></tr></thead><tbody>
+        <tr><td>XS</td><td>6</td><td>34</td><td>2</td><td>80–84</td><td>60–64</td><td>86–90</td></tr>
+        <tr><td>S</td><td>8</td><td>36</td><td>4</td><td>84–88</td><td>64–68</td><td>90–94</td></tr>
+        <tr><td>M</td><td>10</td><td>38</td><td>6</td><td>88–92</td><td>68–72</td><td>94–98</td></tr>
+        <tr><td>L</td><td>12</td><td>40</td><td>8</td><td>92–96</td><td>72–76</td><td>98–102</td></tr>
+        <tr><td>XL</td><td>14</td><td>42</td><td>10</td><td>96–100</td><td>76–80</td><td>102–106</td></tr>
+      </tbody></table>
+    </div>
+    <div class="sg-tbl-wrap" id="menSz">
+      <h3>Men's Clothing</h3>
+      <table class="sg-table"><thead><tr><th>Size</th><th>UK</th><th>EU</th><th>US</th><th>Chest</th><th>Waist</th><th>Shoulder</th></tr></thead><tbody>
+        <tr><td>XS</td><td>34</td><td>44</td><td>34</td><td>86–90</td><td>74–78</td><td>42–43</td></tr>
+        <tr><td>S</td><td>36</td><td>46</td><td>36</td><td>90–94</td><td>78–82</td><td>43–44</td></tr>
+        <tr><td>M</td><td>38</td><td>48</td><td>38</td><td>94–98</td><td>82–86</td><td>44–46</td></tr>
+        <tr><td>L</td><td>40</td><td>50</td><td>40</td><td>98–102</td><td>86–90</td><td>46–48</td></tr>
+        <tr><td>XL</td><td>42</td><td>52</td><td>42</td><td>102–106</td><td>90–94</td><td>48–50</td></tr>
+      </tbody></table>
+    </div>
+    <div class="sg-tips">
+      <h3>How to Measure</h3>
+      <div class="tips-grid">
+        <div class="tip-card"><strong>Chest</strong><p>Around the fullest part of your chest, tape horizontal.</p></div>
+        <div class="tip-card"><strong>Waist</strong><p>Around your natural waistline, just above the belly button.</p></div>
+        <div class="tip-card"><strong>Hips</strong><p>Around the fullest part of your hips, ~20cm below the waist.</p></div>
+        <div class="tip-card"><strong>Need help?</strong><p>Email sizing@rangloop.com — we'll find your perfect fit.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SHIPPING ══════════ -->
+<div id="shippingPage" class="page">
+  <div class="shop-hdr"><h1>Shipping & Delivery</h1><p>Fast, tracked and carbon-neutral — every time</p></div>
+  <div class="info-body">
+    <div class="info-cards">
+      <div class="info-card"><div class="info-icon">✈️</div><h4>Standard Shipping</h4><div class="i-price">Free over $150 · $8 below</div><p>3–5 business days. Tracked from dispatch to your door.</p></div>
+      <div class="info-card"><div class="info-icon">⚡</div><h4>Express Shipping</h4><div class="i-price">$18</div><p>1–2 business days. Order before 1pm for same-day dispatch.</p></div>
+      <div class="info-card"><div class="info-icon">🌍</div><h4>International</h4><div class="i-price">From $24</div><p>7–14 business days. Available to 60+ countries worldwide.</p></div>
+    </div>
+    <div class="info-faq">
+      <h3>Frequently Asked</h3>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">How do I track my order? <span>+</span></div><div class="faq-a">You'll receive a tracking link by email as soon as your order ships. You can also check order status in your account under 'My Orders'.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Can I change my delivery address? <span>+</span></div><div class="faq-a">Yes — within 1 hour of placing your order. Contact us at hello@rangloop.com as quickly as possible.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Do you ship to my country? <span>+</span></div><div class="faq-a">We currently ship to 60+ countries. Enter your address at checkout and available shipping methods will appear automatically.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ RETURNS ══════════ -->
+<div id="returnsPage" class="page">
+  <div class="shop-hdr"><h1>Returns & Exchanges</h1><p>30 days. No questions asked.</p></div>
+  <div class="info-body">
+    <div class="info-cards">
+      <div class="info-card"><div class="info-icon">📦</div><h4>Free Returns</h4><div class="i-price">On all UK orders</div><p>Use the prepaid label in your parcel. Drop off at any post office.</p></div>
+      <div class="info-card"><div class="info-icon">🔄</div><h4>Easy Exchanges</h4><div class="i-price">Size or colour swaps</div><p>Select 'Exchange' in your returns portal and we'll send the new size automatically.</p></div>
+      <div class="info-card"><div class="info-icon">💳</div><h4>Fast Refunds</h4><div class="i-price">Within 5 business days</div><p>Refunds processed to your original payment method as soon as we receive your return.</p></div>
+    </div>
+    <div class="returns-steps">
+      <h3>How to Return</h3>
+      <div class="steps-list">
+        <div class="step"><div class="step-n">01</div><h4>Start Your Return</h4><p>Log into your account and select the items you want to return.</p></div>
+        <div class="step"><div class="step-n">02</div><h4>Print Your Label</h4><p>Download and print the prepaid return label from your account.</p></div>
+        <div class="step"><div class="step-n">03</div><h4>Pack & Post</h4><p>Place items in original packaging and drop off at any post office.</p></div>
+        <div class="step"><div class="step-n">04</div><h4>Get Refunded</h4><p>Refund or exchange processed within 5 business days of receipt.</p></div>
+      </div>
+    </div>
+    <div class="info-faq">
+      <h3>Frequently Asked</h3>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">What items can't be returned? <span>+</span></div><div class="faq-a">Underwear, swimwear and pierced jewellery cannot be returned for hygiene reasons. All other items are eligible within 30 days of delivery.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">What condition should items be in? <span>+</span></div><div class="faq-a">Items must be unworn, unwashed and with all original tags attached.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ JOURNAL ══════════ -->
+<div id="journalPage" class="page">
+  <div class="shop-hdr"><h1>Journal</h1><p>Thoughts on fashion, culture and living with intention</p></div>
+  <div class="journal-grid">
+    <div class="jf" onclick="showToast('Opening article...')">
+      <img src="https://images.unsplash.com/photo-1516762689617-e1cffcef479d?w=1200" alt="">
+      <div class="jf-info"><span class="jcat">Essay</span><h2>The Case for Buying Less, Wearing More</h2><p>A wardrobe built from decisions you can live with for years.</p><span class="jdate">April 18, 2026</span></div>
+    </div>
+    <div class="jl">
+      <div class="jcard" onclick="showToast('Opening article...')"><img src="https://images.unsplash.com/photo-1558769132-cb1aea3c8565?w=500" alt=""><div class="jcard-info"><span class="jcat">Style</span><h3>10 Ways to Rewear One Piece</h3><span class="jdate">April 10, 2026</span></div></div>
+      <div class="jcard" onclick="showToast('Opening article...')"><img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=500" alt=""><div class="jcard-info"><span class="jcat">Interview</span><h3>Behind the Brand: Studio Narae</h3><span class="jdate">March 28, 2026</span></div></div>
+      <div class="jcard" onclick="showToast('Opening article...')"><img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500" alt=""><div class="jcard-info"><span class="jcat">Guide</span><h3>Summer Capsule Wardrobe 2026</h3><span class="jdate">March 15, 2026</span></div></div>
+      <div class="jcard" onclick="showToast('Opening article...')"><img src="https://images.unsplash.com/photo-1560243563-062bfc001d68?w=500" alt=""><div class="jcard-info"><span class="jcat">Culture</span><h3>Fashion Week Without the Hype</h3><span class="jdate">March 2, 2026</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PRODUCT PREVIEW MODAL ══════════ -->
+<div class="product-modal" id="productModal" onclick="if(event.target===this)closePM()">
+  <div class="pm-content">
+    <button class="pm-close" onclick="closePM()">×</button>
+    <div class="pm-images">
+      <div class="pm-img-wrap">
+        <img id="pmMain" src="" alt="Product">
+      </div>
+      <div class="pm-thumbs" id="pmThumbs"></div>
+    </div>
+    <div class="pm-details">
+      <h2 id="pmName"></h2>
+      <div class="pm-price" id="pmPrice"></div>
+      <p class="pm-desc">Crafted with meticulous attention to detail, this piece combines contemporary design with timeless elegance. Made from premium materials for exceptional quality and comfort.</p>
+      <div class="sz-label">Select Size</div>
+      <div class="sz-opts">
+        <button class="sz-opt" onclick="selSize(this)">XS</button>
+        <button class="sz-opt active" onclick="selSize(this)">S</button>
+        <button class="sz-opt" onclick="selSize(this)">M</button>
+        <button class="sz-opt" onclick="selSize(this)">L</button>
+        <button class="sz-opt" onclick="selSize(this)">XL</button>
+      </div>
+      <div class="pm-actions">
+        <button class="btn-full" onclick="pmAddCart()">Add to Bag</button>
+        <button class="btn-full sec" id="pmWishBtn" onclick="pmToggleWish()">♡ Add to Wishlist</button>
+      </div>
+      <ul class="pm-features">
+        <li>Premium quality materials</li>
+        <li>Ethically sourced &amp; produced</li>
+        <li>Free shipping on orders over $150</li>
+        <li>30-day return policy</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ CART DRAWER ══════════ -->
+<div class="drawer" id="cartDrawer">
+  <div class="dr-head"><h2>Shopping Bag</h2><button class="dr-close" onclick="closeDrawer('cart')">×</button></div>
+  <div class="dr-body" id="cartItems"></div>
+  <div class="dr-foot">
+    <div class="cart-total-row"><span>Total</span><strong id="cartTotal">$0</strong></div>
+    <button class="btn-full" onclick="startCheckout()">Proceed to Checkout</button>
+    <button class="btn-full sec" onclick="closeDrawer('cart')">Continue Shopping</button>
+    <div class="checkout-wrap" id="coWrap">
+      <div class="co-tabs">
+        <button class="co-tab active" onclick="switchCO('shipping',this)">1. Shipping</button>
+        <button class="co-tab" onclick="switchCO('payment',this)">2. Payment</button>
+        <button class="co-tab" onclick="switchCO('review',this)">3. Review</button>
+      </div>
+
+      <!-- SHIPPING FORM -->
+      <div class="co-form active" id="coShipping">
+        <h3 style="font-family:var(--fd);font-size:20px;font-weight:300;margin-bottom:18px;">Shipping Details</h3>
+        <input type="text" id="coName" placeholder="Full Name" required>
+        <input type="email" id="coEmail" placeholder="Email Address" required>
+        <input type="tel" id="coPhone" placeholder="Phone Number" required>
+        <textarea id="coAddress" placeholder="Street Address" required></textarea>
+        <div class="form-row">
+          <input type="text" id="coCity" placeholder="City" required>
+          <input type="text" id="coPostal" placeholder="Postal Code" required>
+        </div>
+        <select id="coCountry" required>
+          <option value="">Select Country</option>
+          <option value="United States">United States</option>
+          <option value="United Kingdom">United Kingdom</option>
+          <option value="Canada">Canada</option>
+          <option value="Australia">Australia</option>
+          <option value="India">India</option>
+          <option value="Germany">Germany</option>
+          <option value="France">France</option>
+          <option value="Japan">Japan</option>
+        </select>
+        <button class="btn-full" onclick="validateShipping()">Save & Continue to Payment</button>
+      </div>
+
+      <!-- PAYMENT FORM -->
+      <div class="co-form" id="coPayment">
+        <h3 style="font-family:var(--fd);font-size:20px;font-weight:300;margin-bottom:18px;">Payment Method</h3>
+        <p style="font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;">Choose how you'd like to pay</p>
+        
+        <div class="pay-methods">
+          <div class="pay-opt active" onclick="selectPaymentMethod(this,'Razorpay')">
+            <div style="font-size:20px;margin-bottom:6px;">💳</div>
+            <span>Card / UPI / Wallet</span>
+          </div>
+          <div class="pay-opt" onclick="selectPaymentMethod(this,'UPI')">
+            <div style="font-size:20px;margin-bottom:6px;">🔵</div>
+            <span>UPI Direct</span>
+          </div>
+          <div class="pay-opt" onclick="selectPaymentMethod(this,'COD')">
+            <div style="font-size:20px;margin-bottom:6px;">🚚</div>
+            <span>Cash on Delivery</span>
+          </div>
+        </div>
+
+        <!-- Razorpay info box -->
+        <div id="razorpayInfo" style="display:block;background:var(--warm);padding:14px;border-radius:4px;margin-bottom:14px;">
+          <p style="font-size:12px;color:var(--muted);line-height:1.8;">
+            <strong style="color:var(--ink);display:block;margin-bottom:6px;">🔒 Secure Payment via Razorpay</strong>
+            Pay using Credit Card, Debit Card, NetBanking, UPI (Google Pay, PhonePe, Paytm), or Wallets.
+            Your payment is 100% secured and encrypted.
+          </p>
+        </div>
+
+        <!-- UPI Direct fields -->
+        <div id="upiFields" style="display:none;">
+          <input type="text" id="coUPIID" placeholder="UPI ID (e.g., yourname@okhdfcbank)">
+          <p style="font-size:12px;color:var(--muted);margin-top:6px;margin-bottom:12px;">✓ Supports Google Pay, PhonePe, Paytm, WhatsApp Pay</p>
+        </div>
+
+        <!-- COD note -->
+        <div id="codNote" style="display:none;background:var(--warm);padding:14px;border-radius:4px;margin-bottom:14px;font-size:13px;color:var(--muted);">
+          🚚 You'll pay <strong id="codTotal">$0</strong> in cash when the order arrives at your door.
+        </div>
+
+        <button class="btn-full" onclick="validatePayment()">Continue to Review →</button>
+      </div>
+
+      <!-- REVIEW & CONFIRM -->
+      <div class="co-form" id="coReview">
+        <h3 style="font-family:var(--fd);font-size:20px;font-weight:300;margin-bottom:18px;">Order Summary</h3>
+        
+        <div style="background:var(--warm);padding:16px;border-radius:4px;margin-bottom:14px;">
+          <h4 style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Shipping To</h4>
+          <p id="reviewAddress" style="font-size:13px;line-height:1.7;color:var(--ink);"></p>
+        </div>
+
+        <div style="background:var(--warm);padding:16px;border-radius:4px;margin-bottom:14px;">
+          <h4 style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Items</h4>
+          <div id="reviewItems" style="font-size:13px;color:var(--ink);line-height:1.9;"></div>
+        </div>
+
+        <div style="background:var(--warm);padding:16px;border-radius:4px;margin-bottom:14px;">
+          <h4 style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Payment</h4>
+          <p id="reviewPayment" style="font-size:13px;color:var(--ink);"></p>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px;border-top:2px solid var(--border);margin-bottom:16px;">
+          <span style="font-family:var(--fd);font-size:18px;font-weight:300;">Total</span>
+          <strong id="reviewTotal" style="font-family:var(--fd);font-size:28px;color:var(--accent);">$0</strong>
+        </div>
+
+        <label style="display:flex;align-items:flex-start;gap:10px;margin-bottom:18px;padding:14px;background:rgba(201,120,60,.08);border-radius:4px;cursor:pointer;">
+          <input type="checkbox" id="coTerms" required style="margin-top:3px;accent-color:var(--accent);">
+          <span style="font-size:12px;line-height:1.6;color:var(--muted);">I agree to the Terms & Conditions and Privacy Policy</span>
+        </label>
+
+        <!-- Dynamic confirm button — changes based on payment method -->
+        <button class="btn-full" id="confirmBtn" onclick="confirmOrder()">Confirm & Place Order</button>
+        <button class="btn-full sec" onclick="switchCO('payment',document.querySelectorAll('.co-tab')[1])">← Back to Payment</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ WISHLIST DRAWER ══════════ -->
+<div class="drawer" id="wishDrawer">
+  <div class="dr-head"><h2>Wishlist</h2><button class="dr-close" onclick="closeDrawer('wish')">×</button></div>
+  <div class="dr-body" id="wishItems"></div>
+</div>
+
+<!-- ══════════ OVERLAY ══════════ -->
+<div class="overlay" id="overlay" onclick="closeAllDrawers()"></div>
+
+<!-- ══════════ LOGIN MODAL ══════════ -->
+<div class="modal" id="loginModal" onclick="if(event.target===this)closeModal('login')">
+  <div class="modal-box">
+    <h3>Welcome Back</h3>
+    <p class="sub">Sign in to your account</p>
+    <input type="email" placeholder="Email">
+    <input type="password" placeholder="Password">
+    <div class="modal-actions">
+      <button class="btn-full" onclick="closeModal('login')">Sign In</button>
+      <button class="btn-full sec" onclick="closeModal('login')">Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ OTP VERIFICATION MODAL ══════════ -->
+<div class="modal" id="otpModal" style="z-index:6000;">
+  <div class="modal-box" style="max-width:420px;width:100%;padding:36px;">
+
+    <!-- STEP 1: Choose method + enter contact -->
+    <div id="otpStep1">
+      <h3 style="font-family:var(--fd);font-size:28px;font-weight:300;margin-bottom:6px;">Verify Identity</h3>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:20px;">Receive a 6-digit OTP before checkout</p>
+
+      <!-- Method tabs -->
+      <div style="display:flex;border:1px solid var(--border);border-radius:4px;margin-bottom:20px;overflow:hidden;">
+        <button id="otpMobileTab"
+          onclick="switchOTPMethod('mobile')"
+          style="flex:1;padding:10px;background:var(--ink);color:var(--cream);border:none;font-family:var(--fb);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;">
+          📱 Mobile
+        </button>
+        <button id="otpEmailTab"
+          onclick="switchOTPMethod('email')"
+          style="flex:1;padding:10px;background:transparent;color:var(--muted);border:none;font-family:var(--fb);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;">
+          📧 Email
+        </button>
+      </div>
+
+      <!-- Mobile fields -->
+      <div id="otpMobileFields">
+        <div style="display:flex;gap:8px;margin-bottom:8px;">
+          <select id="otpCountryCode" style="width:95px;padding:12px 8px;border:1px solid var(--border);background:#fff;font-family:var(--fb);font-size:13px;color:var(--ink);outline:none;flex-shrink:0;">
+            <option value="+91">🇮🇳 +91</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+61">🇦🇺 +61</option>
+            <option value="+971">🇦🇪 +971</option>
+            <option value="+65">🇸🇬 +65</option>
+          </select>
+          <input type="tel" id="otpPhone" placeholder="Mobile Number"
+            style="flex:1;padding:12px 13px;border:1px solid var(--border);background:#fff;font-family:var(--fb);font-size:14px;color:var(--ink);outline:none;">
+        </div>
+        <p id="otpPhoneError" style="font-size:11px;color:#c0392b;margin-bottom:10px;display:none;">❌ Enter a valid mobile number</p>
+      </div>
+
+      <!-- Email fields -->
+      <div id="otpEmailFields" style="display:none;">
+        <input type="email" id="otpEmailInput" placeholder="Email Address"
+          style="width:100%;padding:12px 13px;border:1px solid var(--border);background:#fff;font-family:var(--fb);font-size:14px;color:var(--ink);outline:none;margin-bottom:8px;">
+        <p id="otpEmailError" style="font-size:11px;color:#c0392b;margin-bottom:10px;display:none;">❌ Enter a valid email address</p>
+      </div>
+
+      <button class="btn-full" onclick="sendOTP()" style="margin-top:4px;">Send OTP</button>
+      <button class="btn-full sec" style="margin-top:8px;" onclick="closeModal('otp')">Cancel</button>
+    </div>
+
+    <!-- STEP 2: Enter OTP -->
+    <div id="otpStep2" style="display:none;">
+      <h3 style="font-family:var(--fd);font-size:28px;font-weight:300;margin-bottom:6px;">Enter OTP</h3>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:4px;" id="otpSentMsg">OTP sent</p>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:22px;">
+        Valid for <span id="otpTimer" style="color:var(--accent);font-weight:500;">60s</span>
+      </p>
+      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:18px;">
+        <input type="text" class="otp-box" maxlength="1" oninput="otpBoxInput(this,0)" onkeydown="otpBoxKey(this,0,event)">
+        <input type="text" class="otp-box" maxlength="1" oninput="otpBoxInput(this,1)" onkeydown="otpBoxKey(this,1,event)">
+        <input type="text" class="otp-box" maxlength="1" oninput="otpBoxInput(this,2)" onkeydown="otpBoxKey(this,2,event)">
+        <input type="text" class="otp-box" maxlength="1" oninput="otpBoxInput(this,3)" onkeydown="otpBoxKey(this,3,event)">
+        <input type="text" class="otp-box" maxlength="1" oninput="otpBoxInput(this,4)" onkeydown="otpBoxKey(this,4,event)">
+        <input type="text" class="otp-box" maxlength="1" oninput="otpBoxInput(this,5)" onkeydown="otpBoxKey(this,5,event)">
+      </div>
+      <p id="otpError" style="font-size:11px;color:#c0392b;margin-bottom:10px;display:none;">❌ Incorrect OTP. Please try again.</p>
+      <button class="btn-full" onclick="verifyOTP()">Verify OTP</button>
+      <button class="btn-full sec" style="margin-top:8px;" onclick="resendOTP()">Resend OTP</button>
+    </div>
+
+    <!-- STEP 3: Verified -->
+    <div id="otpStep3" style="display:none;text-align:center;padding:20px 0;">
+      <div style="font-size:60px;margin-bottom:16px;animation:popIn .5s ease;">✅</div>
+      <h3 style="font-family:var(--fd);font-size:28px;font-weight:300;margin-bottom:8px;">Verified!</h3>
+      <p style="font-size:13px;color:var(--muted);">Taking you to checkout...</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════ TOAST ══════════ --><!-- ══════════ TOAST ══════════ -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════ ADMIN (triple-click logo) ══════════ -->
+<div class="admin" id="adminPanel">
+  <h2>Add New Product</h2>
+  <div class="admin-grid">
+    <input type="text" id="aName" placeholder="Product Name">
+    <input type="number" id="aPrice" placeholder="Price ($)">
+    <input type="text" id="aImg" placeholder="Image URL">
+    <select id="aCat" style="padding:12px 13px;border:1px solid var(--border);background:#fff;font-family:var(--fb);font-size:14px;color:var(--ink);outline:none;">
+      <option value="Women">Women</option>
+      <option value="Men">Men</option>
+      <option value="Accessories">Accessories</option>
+    </select>
+    <button class="btn-dark" onclick="addProduct()" style="grid-column:span 1;">Add Product</button>
+  </div>
+</div>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  <div class="foot-brand">
+    <div class="foot-logo"><img src="assets/logo.png" alt="RANGLOOP" class="logo-img logo-img-inv"></div>
+    <p>Curating the finest in contemporary fashion since 2024. Discover pieces that transcend trends.</p>
+  </div>
+  <div class="foot-col">
+    <h4>Shop</h4>
+    <a onclick="showPage('shop');filterProducts('Women',null)">Women</a>
+    <a onclick="showPage('shop');filterProducts('Men',null)">Men</a>
+    <a onclick="showPage('new')">New Arrivals</a>
+    <a onclick="showPage('collections')">Collections</a>
+  </div>
+  <div class="foot-col">
+    <h4>Support</h4>
+    <a onclick="showPage('shipping')">Shipping</a>
+    <a onclick="showPage('returns')">Returns</a>
+    <a onclick="showPage('sizeguide')">Size Guide</a>
+    <a onclick="showPage('contact')">Contact</a>
+  </div>
+  <div class="foot-col">
+    <h4>About</h4>
+    <a onclick="showPage('about')">Our Story</a>
+    <a onclick="showPage('sustain')">Sustainability</a>
+    <a onclick="showPage('editorial')">Editorial</a>
+    <a onclick="showPage('journal')">Journal</a>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 RANGLOOP. All rights reserved.</span>
+    <span>Terms · Privacy · Cookies</span>
+  </div>
+</footer>
+
+<!-- ═══ JS MODULES (order matters) ═══ -->
+<script src="js/config.js"></script>
+<script src="js/supabase.js"></script>
+<script src="js/data.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/checkout.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/init.js"></script>
+
+</body>
+</html>

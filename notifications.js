@@ -136,19 +136,21 @@ async function sendSMSOTP(fullPhone, otp) {
 }
 
 async function sendEmailOTP(email, otp) {
-  if(EMAILJS_SERVICE_ID.includes('YOUR_SERVICE_ID')) return false;
-  if(typeof emailjs === 'undefined') return false;
+  if (EMAILJS_SERVICE_ID.includes('YOUR_SERVICE_ID')) return false;
+  if (typeof emailjs === 'undefined') return false;
+
   try {
     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-      to_email:   email,
-      to_name:    email.split('@')[0],
-      otp_code:   otp,
-      shop_name:  'RANGLOOP',
-      valid_mins: '10',
-      subject:    'Your RANGLOOP OTP Code',
+      email: email,
+      passcode: otp,
+      time: '10 minutes'
     });
+
     return true;
-  } catch(e){ console.warn('Email OTP error:',e); return false; }
+  } catch (e) {
+    console.warn('Email OTP error:', e);
+    return false;
+  }
 }
 
 function startOTPTimer(seconds) {

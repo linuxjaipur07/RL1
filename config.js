@@ -9,8 +9,11 @@ const RAZORPAY_KEY = 'rzp_test_YOUR_KEY_HERE'; // Replace with rzp_live_... for 
 // ⚠️  STEP 3: EMAILJS CONFIG (free at emailjs.com)
 // Setup: emailjs.com → Add Service (Gmail) → Add Template → Copy IDs
 const EMAILJS_SERVICE_ID  = 'service_xuis7tm';   // e.g. service_abc123
-const EMAILJS_TEMPLATE_ID = 'template_r5oydik';  // e.g. template_xyz789
+const EMAILJS_TEMPLATE_OTP = 'template_r5oydik';  // e.g. template_xyz789
+const EMAILJS_TEMPLATE_ORDER = 'template_wbd0buw'; // e.g. template_xyz789
 const EMAILJS_PUBLIC_KEY  = 'clpa3O6vvYqRSGyKm';   // e.g. user_XXXXXXXXXX
+
+emailjs.init(EMAILJS_PUBLIC_KEY);
 
 // ⚠️  STEP 4: TWILIO CONFIG (free trial at twilio.com)
 // For OTP SMS — needs a small backend (Netlify/Vercel function)

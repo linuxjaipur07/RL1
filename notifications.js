@@ -140,7 +140,7 @@ async function sendEmailOTP(email, otp) {
   if (typeof emailjs === 'undefined') return false;
 
   try {
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_OTP, {
       email: email,
       passcode: otp,
       time: '10 minutes'
@@ -233,7 +233,7 @@ async function sendOrderConfirmationEmail(orderData) {
     `${i.qty}x ${i.name} (${i.size||'S'}) — ₹${(i.price*i.qty).toFixed(2)}`
   ).join('\n');
   try {
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ORDER, {
       to_email:       orderData.user_email,
       to_name:        orderData.shipping_address?.name||'Customer',
       order_id:       String(orderData.order_id||'N/A'),
